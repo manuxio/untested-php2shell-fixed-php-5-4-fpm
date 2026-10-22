@@ -25,6 +25,14 @@ with the same configure flags, extensions and `php-fpm.conf`. Changes to that re
 - PHP tarball downloaded over HTTPS and checked against php.net's published SHA256 in
   addition to the GPG signature.
 - `php-5.4-CVE-2026-109618-109619.patch` applied with `patch --fuzz=0`.
+- `php-5.4-mask-server-signature.patch`: the PHP version is masked in server
+  signatures — `X-Powered-By: php-a-mnx` instead of `X-Powered-By: PHP/5.4.45`
+  (and the Apache `Server` token in apxs2 builds). `phpversion()` / `PHP_VERSION`
+  are untouched.
+- The recommended php2shell mitigations are baked in as defaults:
+  `session.upload_progress.enabled=0` and `memory_limit=-1`
+  (`conf.d/zz-php2shell-mitigations.ini`, overridable downstream) and
+  `pm.max_requests=1` in `php-fpm.conf`.
 
 Build it yourself:
 
@@ -57,6 +65,11 @@ and `_exit(1)`s.
   sees a closed connection. FPM respawns the worker.
 - `session.upload_progress` never records progress, whatever `php.ini` says.
 - New INI `max_multipart_body_parts` (default `-1` = `max_input_vars + max_file_uploads`).
+- Default INI: `session.upload_progress.enabled=0`, `memory_limit=-1` (no PHP memory cap:
+  rely on container/cgroup limits; a failed allocation still terminates the worker).
+  Override in a later `conf.d` file if you need the old defaults.
+- `pm.max_requests=1`: every FPM worker exits after serving one request and is respawned,
+  so no request can observe state left behind by a previous one.
 
 Other fatal errors still unwind with `longjmp()`; this is a mitigation, not a complete fix.
 
