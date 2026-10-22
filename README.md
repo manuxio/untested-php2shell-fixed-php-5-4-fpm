@@ -1,3 +1,9 @@
+> **MOVED.** This image is now maintained in the
+> [untested-php2shell-fixed-php-fpm-mod_php](https://github.com/manuxio/untested-php2shell-fixed-php-fpm-mod_php)
+> monorepo, together with every other version/SAPI combination. Use
+> `ghcr.io/manuxio/untested-php2shell-fixed-php-fpm-mod_php:5.4.45-fpm`
+> instead of this repository's image, which will no longer be updated.
+
 # untested-php2shell-fixed-php-5-4-fpm
 
 > **UNTESTED, UNOFFICIAL, NO WARRANTY.** This is a best-effort, hand-made backport for a
